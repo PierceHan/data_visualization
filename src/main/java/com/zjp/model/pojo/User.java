@@ -1,8 +1,10 @@
 package com.zjp.model.pojo;
 
+import javax.persistence.Table;
 import java.util.Date;
 
-public class User {
+@Table(name = "t_user")
+public class User extends BaseEntity {
     private String username;
     private String password;
     private Date createTime;
