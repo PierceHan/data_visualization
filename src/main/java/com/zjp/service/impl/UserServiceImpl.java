@@ -22,6 +22,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        User user0 = new User();
+        user0.setUsername(user.getUsername());
+        User user1 = userMapper.selectOne(user0);
+        if (user1!=null){
+            throw new DataException("用户名重复", DataException.ExceptionName.Duplicate);
+        }
         Date date = new Date();
         user.setCreateTime(date);
         int result = userMapper.insert(user);
