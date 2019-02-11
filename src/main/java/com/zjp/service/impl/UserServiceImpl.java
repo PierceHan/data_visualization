@@ -36,10 +36,13 @@ public class UserServiceImpl implements UserService {
         User user0 = new User();
         user0.setUsername(username);
         User user = userMapper.selectOne(user0);
+        if (user==null){
+            throw new DataException("用户不存在", DataException.ExceptionName.Forbidden);
+        }
         if (user.getPassword().equals(password)){
             return user;
         }
-        return null;
+        throw new DataException("密码错误", DataException.ExceptionName.Forbidden);
     }
 
     @Override
