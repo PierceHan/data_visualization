@@ -1,5 +1,6 @@
 package com.zjp.service.impl;
 
+import com.zjp.common.exception.DataException;
 import com.zjp.mapper.UserMapper;
 import com.zjp.model.pojo.User;
 import com.zjp.service.UserService;
@@ -7,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by hanguoan on 2019/1/6.
  */
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserMapper userMapper;
 
@@ -20,7 +23,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         Date date = new Date();
+        user.setCreateTime(date);
         int result = userMapper.insert(user);
+        if (result!=0){
+            return user;
+        }
         return null;
     }
 
@@ -33,5 +40,30 @@ public class UserServiceImpl implements UserService {
             return user;
         }
         return null;
+    }
+
+    @Override
+    public User update(User user) {
+        User oldUser = userMapper.selectByPrimaryKey(user.getId());
+        if (oldUser!=null){
+            int result = userMapper.updateByPrimaryKeySelective(user);
+            if (result!=0){
+                return userMapper.selectByPrimaryKey(user.getId());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteUser(String id) {
+        int result = userMapper.deleteByPrimaryKey(id);
+        if (result==0){
+            throw new DataException("没有查到该用户", DataException.ExceptionName.InvalidParams);
+        }
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userMapper.selectAll();
     }
 }
